@@ -57,7 +57,8 @@ class LocalDatabase:
                 "default_user": {
                     "conversations": [],
                     "summary_conversation": "",
-                    "clarifying_question_count": 0
+                    "clarifying_question_count": 0,
+                    "pending_question":""
                 }
             }
             self._write_conversation_data(default_conversations)
@@ -100,20 +101,23 @@ class LocalDatabase:
         return data.get(user_id, {
             "conversations": [],
             "summary_conversation": "",
-            "clarifying_question_count": 0
+            "clarifying_question_count": 0,
+            "pending_question": ""
         })
 
-    def update_conversation_history(self, user_id, conversation_item, summary_conversation, clarifying_question_count):
+    def update_conversation_history(self, user_id, conversation_item, summary_conversation, clarifying_question_count,pending_question):
         data = self._read_conversation_data()
         if user_id not in data:
             data[user_id] = {
                 "conversations": [],
                 "summary_conversation": "",
-                "clarifying_question_count": 0
+                "clarifying_question_count": 0,
+                "pending_question": ""
             }
         data[user_id]["conversations"].append(conversation_item)
         data[user_id]["summary_conversation"] = summary_conversation
         data[user_id]["clarifying_question_count"] = clarifying_question_count
+        data[user_id]["pending_question"] = pending_question
         self._write_conversation_data(data)
 
 def main():
@@ -135,14 +139,20 @@ def main():
     conversation_history = conversation_data["conversations"]
     summary_conversation = conversation_data["summary_conversation"]
     clarifying_question_count = conversation_data["clarifying_question_count"]
-
+    pending_question=conversation_data["pending_question"]
     print("Welcome to AI Consultant! Type 'exit' to end the conversation.")
     
     while True:
         user_input = input("\nYou: ").strip()
         if user_input.lower() == 'exit':
             break
-
+        # If there is a pending question (unresolved user question), add the user input as additional info
+        if pending_question != "":
+            input_text = f"Unresolved Question: {pending_question} | Additional Info: {user_input}"
+        else:
+            # If no pending question, treat the input as a new user question
+            pending_question = user_input  # Store the new user question
+            input_text = user_input
         # Format conversation history
         if len(conversation_history) >= 2:
             last_two_items = conversation_history[-2:]
@@ -161,13 +171,13 @@ def main():
 
         # Generate response based on selected tool
         if selected_tools == "career":
-            response, _ = careerAdvisor.get_response(user_input, summary_conversation, past_response, 
+            response, _ = careerAdvisor.get_response(input_text, summary_conversation, past_response,
                                                    selected_memory, extracted_data, clarifying_question_count)
         elif selected_tools == "academic":
-            response, _ = academicAdvisor.get_response(user_input, summary_conversation, past_response, 
+            response, _ = academicAdvisor.get_response(input_text, summary_conversation, past_response,
                                                      selected_memory, extracted_data, clarifying_question_count)
         else:  # general
-            response, _ = generalAdvisor.get_response(user_input, summary_conversation, past_response, 
+            response, _ = generalAdvisor.get_response(input_text, summary_conversation, past_response,
                                                     selected_memory, extracted_data)
 
         # Update memory
@@ -187,17 +197,29 @@ def main():
                 user_id,
                 item,
                 response.get("update_summarized_conversation", summary_conversation),
-                clarifying_question_count
+                clarifying_question_count,
+                pending_question
             )
 
         # Print response
         print("\nAssistant:", response["answer_to_customer"])
-
         # Update clarifying question count
-        if response.get('clarifying_question', False):
-            clarifying_question_count += 1
+        # Only check for clarifying question if the selection is either 'academia' or 'career'
+
+        if selected_tools in ['academic', 'career']:
+
+            # Check if the AI asked a clarifying question
+            if response['clarifying_question']:
+                # Increment the clarifying question count
+                clarifying_question_count += 1
+            else:
+                # If no clarifying question was asked, consider the question resolved
+                clarifying_question_count = 0  # Reset the clarifying question count
+                pending_question = None  # Clear the unresolved question
         else:
-            clarifying_question_count = 0
+            clarifying_question_count = 0  # Reset the clarifying question count
+            pending_question = None  # Clear the unresolved question
+
 
 if __name__ == '__main__':
     main()

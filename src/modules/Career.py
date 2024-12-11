@@ -30,6 +30,7 @@ class CareerAdvisor:
     
                 2. **Respond to the User's Query**:
                     - If sufficient information has been provided or after **2 rounds of clarifying questions**, provide a concise career recommendation (3 bullet points or fewer, max 100 words).
+                    - **Formatting Requirements**: Use numbered bullet points for each item (e.g., "1.", "2.", "3.") and include **bold formatting** for key terms in each bullet (e.g., "1. **Recommendation**: Explanation here.").
                     - Include **specific recommendations for certifications, skills, or industry-recognized qualifications** based on the user’s career aspirations (e.g., CPA for accounting, PMP for project management, AWS Certified Solutions Architect for cloud computing).
                     - Offer personalized advice on **next career steps** such as skill development, potential job roles, or industries to explore.
                     - Return the answer in the `answer_to_customer` field and set `clarifying_question=False`.
