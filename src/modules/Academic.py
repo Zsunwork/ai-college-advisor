@@ -25,7 +25,7 @@ class AcademicAdvisor:
                 
                 1. **Check if sufficient information is provided**:
                     - Consider the provided information in {select_memory_content}. If any of the keys in this dictionary contain blank values (`None` or empty string ""), this is defined as **insufficient information**. In this case, do **not** provide an answer immediately.
-                    - If **fewer than 2 clarifying questions** have already been asked (i.e., {clarifying_question_count} < 2), ask **1 clarifying question** to gather more relevant information. Return clarifying questions in the `answer_to_customer` field and set `clarifying_question=True`.
+                    - If **fewer than 2 clarifying questions** have already been asked (i.e., {clarifying_question_count} < 2), ask **1 clarifying question** to gather more relevant information. Return clarifying questions in the `answer_to_customer` field and set `clarifying_question=True`.**Skip step 2** and proceed to step 3.
                     - If **2 or more clarifying questions** have already been asked (i.e., {clarifying_question_count} >= 2), proceed to step 2.
     
                 2. **Respond to the User's Query**:

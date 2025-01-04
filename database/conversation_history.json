@@ -1,0 +1,17 @@
+{
+  "default_user": {
+    "conversations": [
+      {
+        "text": "what course should I take next semester",
+        "from": "user"
+      },
+      {
+        "text": "1. **Interests**: What subjects or fields are you most passionate about? This can guide your course selection.\n2. **Career Goals**: What are your long-term career aspirations? Certain courses may align better with your desired profession.\n3. **Prerequisites**: Have you completed any foundational courses that might influence your next steps? Understanding your academic background is crucial.",
+        "from": "assistant"
+      }
+    ],
+    "summary_conversation": "The user is seeking advice on which course to take next semester, and I have asked clarifying questions about their interests, career goals, and prerequisites.",
+    "clarifying_question_count": 0,
+    "pending_question": "what course should I take next semester"
+  }
+}

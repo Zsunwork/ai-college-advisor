@@ -1,0 +1,15 @@
+{
+  "default_user": {
+    "general_background": null,
+    "preference": null,
+    "education_background": null,
+    "education_plan": null,
+    "courses_taken": null,
+    "research_experience": null,
+    "career_background": null,
+    "career_plan": null,
+    "summary_plans": null,
+    "summary_advice": null,
+    "milestones_achieved": null
+  }
+}
